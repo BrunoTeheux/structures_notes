@@ -26,25 +26,13 @@ jobs:
           name: PDF
           path: "Notes_de_cours.pdf"
           
-      - name: Create Release
+     - name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/main'
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          tag_name: pdf-${{ github.run_number }}
-          release_name: PDF Build ${{ github.run_number }}
-          draft: false
-          prerelease: false
-          
-      - name: Upload Release Asset
-        if: github.ref == 'refs/heads/main'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./notes_de_cours.pdf
-          asset_name: document.pdf
-          asset_content_type: application/pdf
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+          publish_branch: gh-pages
+          force_orphan: true
+          exclude_assets: '.github,**/*.tex,**/*.bib'
+          keep_files: false
