@@ -19,7 +19,7 @@ jobs:
           root_file: Notes_de_cours.tex
           
       - name: Upload PDF artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: PDF
           path: Notes_de_cours.pdf
