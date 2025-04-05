@@ -1,0 +1,48 @@
+name: Build LaTeX document
+on:
+  push:
+    paths:
+      - '**.tex'
+      - '**.bib'
+      - 'Img/**'
+
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Compile LaTeX document
+        uses: xu-cheng/latex-action@v2
+        with:
+          root_file: Notes_de_cours.tex
+          
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: PDF
+          path: Notes_de_cours.pdf
+          
+      - name: Create Release
+        if: github.ref == 'refs/heads/main'
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: pdf-${{ github.run_number }}
+          release_name: PDF Build ${{ github.run_number }}
+          draft: false
+          prerelease: false
+          
+      - name: Upload Release Asset
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./notes_de_cours.pdf
+          asset_name: document.pdf
+          asset_content_type: application/pdf
