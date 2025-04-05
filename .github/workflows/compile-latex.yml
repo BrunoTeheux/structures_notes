@@ -24,7 +24,8 @@ jobs:
       - name: Create deployment directory
         run: |
           mkdir -p deploy
-          cp Notes_de_cours.pdf deploy/
+          cp Notes_de_cours.pdf deploy/ || echo "Failed to copy PDF"
+          ls -la deploy/
           
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
